@@ -1,7 +1,7 @@
 import {persist} from './persist.js'
 import {queryParams} from './$.js'
 import {ARROW_SVGS} from './components/misc.js'
-import {onTick} from './timer.js'
+import {onTick, onClear} from './timer.js'
 
 
 
@@ -11,6 +11,7 @@ export const globalState = persist('__DO_NOTHING_GLOBAL_STATE', {
   totalNothingTime: 0,
   lastTimeStreak: 0,
   totalSeconds: 0,
+  totalClears: 0,
   doingNothing: false,
   gameStarted: false,
   gameStopped: false,
@@ -19,6 +20,13 @@ export const globalState = persist('__DO_NOTHING_GLOBAL_STATE', {
   moneyPopupDisplayed: false,
   moneyPopupDismissed: false,
   achievementsDisplayed: false,
+
+  balanceCents: 0,
+  storeUnlocked: false,
+  statsUnlocked: false,
+  moneyBoxUnlocked: false,
+  adBlockerUnlocked: false,
+  adBlockerEnabled: false,
 
   get tabActive() {
     return !document.hidden
@@ -37,12 +45,33 @@ export const globalState = persist('__DO_NOTHING_GLOBAL_STATE', {
       },
       display() {
         return `Current Streak ${ARROW_SVGS['→']} ${formatTime(60 - globalState.currentNothingTimeStreak)}`
+      },
+      onClaim() {
+        globalState.storeUnlocked = true
+        globalState.moneyBoxUnlocked = true
+        window.dispatchEvent(new CustomEvent('nothingAchievementClaimed', {detail: '0'}))
+        window.dispatchEvent(new CustomEvent('nothingModuleUnlocked'))
       }
     },
+    1: {
+      completed: false,
+      claimed: false,
+      displayed: false,
+      initialDisplay() {
+        return globalState.achievementList[0].claimed && globalState.currentNothingTimeStreak >= 3
+      },
+      criteria() {
+        return globalState.currentNothingTimeStreak >= 120
+      },
+      display() {
+        return `Current Streak ${ARROW_SVGS['→']} ${formatTime(120 - globalState.currentNothingTimeStreak)}`
+      },
+      onClaim() {
+        globalState.statsUnlocked = true
+        window.dispatchEvent(new CustomEvent('nothingModuleUnlocked'))
+      }
+    }
   }
-
-
-
 })
 
 
@@ -53,6 +82,9 @@ onTick(() => {
   })
 })
 
+onClear(() => {
+  if (globalState.currentNothingTimeStreak > 0) globalState.totalClears += 1
+})
 
 
 // Mark game as stopped on load

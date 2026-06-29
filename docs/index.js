@@ -9,6 +9,10 @@ import './components/nothingModule.js'
 import './components/nothingTimer.js'
 import './components/popup.js'
 import './components/achievements.js'
+import './components/nothingStats.js'
+import './components/nothingStore.js'
+import './components/nothingMoneyBox.js'
+import './components/nothingAdBlocker.js'
 
 
 
@@ -16,50 +20,27 @@ veilDisplay('veil')
 menuDisplay('menu', 'menuControls', 'menuStats')
 
 
+// -- Module mounting --
+
+function mountIfMissing(id, tag) {
+  if (!$.id(id)) {
+    $.id('main').append($.fromHTML(`<${tag} id="${id}"></${tag}>`))
+  }
+}
+
+function checkModules() {
+  if (globalState.storeUnlocked) mountIfMissing('nothingStore', 'nothing-store')
+  if (globalState.statsUnlocked) mountIfMissing('nothingStats', 'nothing-stats')
+  if (globalState.moneyBoxUnlocked) mountIfMissing('nothingMoneyBox', 'nothing-money-box')
+  if (globalState.adBlockerUnlocked) mountIfMissing('nothingAdBlocker', 'nothing-ad-blocker')
+}
+
+checkModules()
+onTick(checkModules)
+window.addEventListener('nothingModuleUnlocked', checkModules)
 
 
-
-
-/* TODO
-
-  - Achievement module
-    - visible after 30 seconds
-    - initial achievement: do nothing for one minute straight (count down)
-      - click to activate achievement prize: store module
-      - triggers popup ~10 seconds later
-
-    - achievement 2:00 streak
-      - unlock stats (total streaks, total new high scores, total clears, time spent doing something (total time with window focused - total nothing time))
-
-
-
-  - store module
-    - buy ad blocker (toggle popups)
-    - supercharge the $ box
-    - buy a new $ box
-    - upgrade $ box capacity
-    - buy ability to keep $ generation on
-    - buy more detailed stats (how many resets, time spent doing something)
-    - night mode
-    - screen savers (+ maybe actual screen savers when the game is paused)
-    - change font
-    - change colors
-    - clock module
-
-  - enable popups after 57 seconds
-     - show one popup over time immediately
-     - display a popup in random locations (without x going off screen) every ~30s +/- 10s
-
-  - $ box module
-    - [_] <- $
-    -
-
-  - ad blocker module
-    - toggle popups on/off
-
-*/
-
-
+// -- Popup logic --
 
 function mountMoneyPopup() {
   const width = 200
@@ -68,7 +49,7 @@ function mountMoneyPopup() {
   const y = Math.floor(Math.random() * (window.innerHeight - height))
 
   const moneyPopup = $.fromHTML(`
-    <nothing-popup id="moneyPopup" x="${x}px" y="${y}px" width="${width}px" height="${height}px">
+    <nothing-popup x="${x}px" y="${y}px" width="${width}px" height="${height}px">
       <span style="font-size: 30px; cursor: pointer; font-family: var(--font2); font-weight: bold">CLICK <nothing-blink duration="750"><span style="text-decoration: underline">HERE</span></nothing-blink> TO START MAKING $ <em>NOW</em></span>
     </nothing-popup>
   `)
@@ -80,14 +61,44 @@ function mountMoneyPopup() {
   $.id('main').append(moneyPopup)
 }
 
-onTick(() => {
-  if (!globalState.moneyPopupDisplayed && globalState.currentNothingTimeStreak >= 56) {
-    mountMoneyPopup()
-    globalState.moneyPopupDisplayed = true
-  }
-})
+let popupScheduled = false
 
+function scheduleNextPopup() {
+  if (popupScheduled) return
+  popupScheduled = true
+  const run = () => {
+    const delay = (20 + Math.random() * 20) * 1000
+    setTimeout(() => {
+      if (!globalState.adBlockerEnabled) mountMoneyPopup()
+      run()
+    }, delay)
+  }
+  run()
+}
+
+function showFirstPopup() {
+  if (globalState.moneyPopupDisplayed) return
+  mountMoneyPopup()
+  globalState.moneyPopupDisplayed = true
+  scheduleNextPopup()
+}
+
+// Rehydration: restore popup state from previous session
 if (globalState.moneyPopupDisplayed && !globalState.moneyPopupDismissed) {
   mountMoneyPopup()
 }
+if (globalState.moneyPopupDisplayed) {
+  scheduleNextPopup()
+}
 
+// Fallback trigger at 57s in case achievement hasn't been claimed yet
+onTick(() => {
+  if (!globalState.moneyPopupDisplayed && globalState.currentNothingTimeStreak >= 57) {
+    showFirstPopup()
+  }
+})
+
+// Achievement 0 claim triggers first popup after 10s
+window.addEventListener('nothingAchievementClaimed', e => {
+  if (e.detail === '0') setTimeout(showFirstPopup, 10000)
+})

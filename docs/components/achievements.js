@@ -31,6 +31,7 @@ createComponent(
   `
     <link rel="stylesheet" href="./index.css">
     <style>
+      :host { display: block; }
       * {
         padding: 0;
         margin: 0;
@@ -65,6 +66,7 @@ createComponent(
       `)
 
       claim.onclick = () => {
+        a.onClaim?.()
         a.claimed = true
         ctx.render()
       }
