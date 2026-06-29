@@ -28,18 +28,90 @@
 
 
   <link rel="stylesheet" href="./index.css">
+
+  <style type="text/css">
+
+    main {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5em;
+      padding: 0.5em;
+    }
+
+    main > * {
+      padding: 0.5em;
+    }
+
+    #veil, #menu {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      transition: opacity 300ms;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #veil {
+      background: var(--text-color);
+      color: var(--bg-color);
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    #menu {
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    #veil a, #menu a {
+      color: inherit;
+    }
+
+    #menu a:hover {
+      text-decoration: none;
+    }
+
+    #menuControls {
+      margin-top: 0.75em;
+    }
+
+    #menuControls button + button {
+      margin-left: 0.5em;
+    }
+
+    #menuControls button {
+      font-size: 16px;
+      padding: 0.25em 0.5em;
+      font-family: var(--font);
+    }
+
+    #menuStats {
+      margin-top: 1em;
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
 
-  <main id="app"></main>
+  <main id="main"></main>
   <div id="veil">
     <h1>The Do Nothing Game</h1>
     <h2><a href="https://steviep.xyz" target="_blank" rel="noopener">steviep.xyz</a> 2026</h2>
-    <p id="veil-best"></p>
-    <p id="veil-total"></p>
   </div>
 
-  <!-- classic script: provides the globals (deepEquals, noop) $.js's createComponent relies on -->
+  <div id="menu">
+    <h1>The Do Nothing Game</h1>
+    <h2><a href="https://steviep.xyz" target="_blank" rel="noopener">steviep.xyz</a> 2026</h2>
+    <div id="menuControls"></div>
+    <div id="menuStats"></div>
+  </div>
+
+
+
+
   <script src="./utils.js"></script>
   <script type="module" src="./index.js"></script>
 </body>

@@ -49,13 +49,6 @@ $.div = $.create('div')
 $.span = $.create('span')
 $.main = $.create('main')
 $.section = $.create('section')
-$.template = $.create('template')
-
-$.fromHTML = html => {
-  const wrapper = document.createElement('div')
-  wrapper.innerHTML = html.trim()
-  return wrapper.firstElementChild
-}
 
 
 const $html = document.getElementsByTagName('html')[0]

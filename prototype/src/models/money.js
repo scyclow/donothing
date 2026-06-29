@@ -1,12 +1,11 @@
-import {state} from './state.js'
+import {state} from '../state.js'
 
-// $0.01 for every full 250ms the pointer sits inside the hover box.
-// setInterval fires only after a complete 250ms, so partial hovers earn nothing.
-let earnId = null
+// The money entity: a single balance (in whole cents, to avoid float drift)
+// fed by three earners on one box — click, hover, and hold.
 let onEarn = () => {}
 
 // lets the view repaint the balance the moment a cent lands, instead of
-// waiting for the next 250ms clock tick.
+// waiting for the next loop tick.
 export const setOnEarn = fn => { onEarn = fn }
 
 const earn = () => {
@@ -21,6 +20,8 @@ let isDown = false
 let releasedAt = 0
 const hoverAllowed = () => !isDown && Date.now() - releasedAt >= 100
 
+let earnId = null
+
 export const startEarning = () => {
   if (earnId) return
   earnId = setInterval(() => { if (hoverAllowed()) earn() }, 500)
@@ -31,7 +32,6 @@ export const stopEarning = () => {
   earnId = null
 }
 
-// the "hold" earner: $0.01 for every full 125ms the mouse is held down inside the box.
 let holdId = null
 
 export const startHoldEarning = () => {
@@ -47,7 +47,6 @@ export const stopHoldEarning = () => {
   holdId = null
 }
 
-// the "click" section: $0.01 per click (earn() fires onEarn, so the $ repaints immediately).
 export const clickEarn = () => earn()
 
 export const formatMoney = () => `$${(state.balanceCents / 100).toFixed(2)}`

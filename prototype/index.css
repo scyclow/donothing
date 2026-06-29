@@ -1,7 +1,3 @@
-
-/* TODO, add ttf */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
 @font-face {
   font-family: 'Roboto Mono';
   src: url('./assets/Roboto_Mono/static/RobotoMono-Regular.ttf') format('truetype');
@@ -28,12 +24,9 @@
   --text-color:  #000;
   --bg-color: #fff;
   --border-color: #666;
-  --warning-color: #ff0051;
 
   --tertiary-color: #000;
   --input-color: color-mix(in srgb, var(--bg-color) 16%, #fff);
-  --font: "Roboto Mono", monospace;
-  --font2: "Inter", sans-serif;
 }
 
 
@@ -44,7 +37,7 @@
 }
 
 body {
-  font-family: var(--font);
+  font-family: "Roboto Mono", monospace;
 }
 
 
@@ -80,4 +73,22 @@ video {
   display: none !important;
 }
 
+/* full-screen blackout while the page is inactive (see clock pause/resume) */
+#veil {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  background: var(--text-color);
+  color: var(--bg-color);
+  transition: opacity 300ms;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
+#veil a {
+  color: inherit;
+}

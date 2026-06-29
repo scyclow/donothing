@@ -1,13 +1,5 @@
 import {ls} from './$.js'
 
-let persistenceHalted = false
-
-// Call before wiping localStorage so trailing state mutations (e.g. event
-// handlers firing during the same click) don't re-persist the old state.
-export function haltPersistence() {
-  persistenceHalted = true
-}
-
 export function createDeepProxy(target, cb) {
   return new Proxy(target, {
     set(obj, key, val) {
@@ -30,7 +22,6 @@ export function persist(lsKey, init={}) {
   const ctx = {...init, ...(ls.get(lsKey) || {})}
 
   const set = () => {
-    if (persistenceHalted) return
     ls.set(lsKey, JSON.stringify(ctx))
   }
 
