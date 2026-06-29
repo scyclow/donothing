@@ -1,7 +1,11 @@
-import {createComponent} from '../../$.js'
+import {$, createComponent} from '../../$.js'
 import {globalState,} from '../state.js'
-import {onPause, onResume, onClear} from '../timer.js'
-import {onTick} from '../timer.js'
+import {onPause, onResume, onClear, onTick} from '../timer.js'
+import {persist} from '../persist.js'
+
+
+
+$.id('main').append($.fromHTML(`<nothing-timer></nothing-timer>`))
 
 
 createComponent(
@@ -46,7 +50,9 @@ createComponent(
       </section>
     </div>
   `,
-  {},
+  persist('__DO_NOTHING_TIMER', {
+    showBest: false
+  }),
   ctx => {
     ctx.$nothingTimer = ctx.$('#nothingTimer')
     ctx.$timer = ctx.$('#timer')
@@ -58,8 +64,11 @@ createComponent(
 
 
     onTick(() => ctx.render())
+
     onClear(() => {
-      ctx.render()
+      ctx.setState({
+        showBest: globalState.bestNothingTimeStreak > 2 && globalState.currentNothingTimeStreak < globalState.totalNothingTime
+      }, true)
 
 
       if (globalState.currentNothingTimeStreak > 0) {
@@ -76,21 +85,19 @@ createComponent(
 
   },
   ctx => {
-    const showBest = globalState.bestNothingTimeStreak > 2
-      && globalState.currentNothingTimeStreak < globalState.totalNothingTime
 
 
-    ctx.$currentHeader.style.visibility = showBest ? 'visible' : 'hidden'
+    ctx.$currentHeader.style.visibility = ctx.state.showBest ? 'visible' : 'hidden'
 
     ctx.$timer.innerHTML = formatTime(globalState.currentNothingTimeStreak)
 
     ctx.$bestStreak.innerHTML = formatTime(globalState.bestNothingTimeStreak)
-    ctx.$bestStreakSection.style.display = showBest ? 'block' : 'none'
+    ctx.$bestStreakSection.style.display = ctx.state.showBest ? 'block' : 'none'
 
     ctx.$totalTime.innerHTML = formatTime(globalState.totalNothingTime)
 
     ctx.$totalTimeSection.style.display =
-      showBest
+      ctx.state.showBest
       && globalState.bestNothingTimeStreak > 10
       && (
         globalState.totalNothingTime - 10 > globalState.currentNothingTimeStreak

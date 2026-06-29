@@ -13,7 +13,7 @@ export function createDeepProxy(target, cb) {
     set(obj, key, val) {
       obj[key] = val
 
-      cb(obj, key, val)
+      if (typeof val !== 'function') cb(obj, key, val)
 
       return Reflect.set(...arguments)
     },
@@ -25,9 +25,22 @@ export function createDeepProxy(target, cb) {
   })
 }
 
+function deepMerge(init, stored) {
+  const result = {...init}
+  for (const [key, storedVal] of Object.entries(stored)) {
+    const initVal = init[key]
+    if (typeof initVal === 'function') continue
+    if (storedVal && typeof storedVal === 'object' && initVal && typeof initVal === 'object') {
+      result[key] = deepMerge(initVal, storedVal)
+    } else {
+      result[key] = storedVal
+    }
+  }
+  return result
+}
+
 export function persist(lsKey, init={}) {
-  // merge init defaults under stored state: add missing keys, never overwrite stored values
-  const ctx = {...init, ...(ls.get(lsKey) || {})}
+  const ctx = deepMerge(init, ls.get(lsKey) || {})
 
   const set = () => {
     if (persistenceHalted) return

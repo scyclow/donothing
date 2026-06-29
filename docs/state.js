@@ -1,5 +1,7 @@
 import {persist} from './persist.js'
 import {queryParams} from './$.js'
+import {ARROW_SVGS} from './components/misc.js'
+import {onTick} from './timer.js'
 
 
 
@@ -15,7 +17,40 @@ export const globalState = persist('__DO_NOTHING_GLOBAL_STATE', {
   gamePaused: false,
 
   moneyPopupDisplayed: false,
-  moneyPopupDismissed: false
+  moneyPopupDismissed: false,
+  achievementsDisplayed: false,
+
+  get tabActive() {
+    return !document.hidden
+  },
+
+  achievementList: {
+    0: {
+      completed: false,
+      claimed: false,
+      displayed: false,
+      initialDisplay() {
+        return globalState.currentNothingTimeStreak >= 27
+      },
+      criteria() {
+        return globalState.currentNothingTimeStreak >= 60
+      },
+      display() {
+        return `Current Streak ${ARROW_SVGS['→']} ${formatTime(60 - globalState.currentNothingTimeStreak)}`
+      }
+    },
+  }
+
+
+
+})
+
+
+onTick(() => {
+  Object.values(globalState.achievementList).forEach(a => {
+    if (a.criteria()) a.completed = true
+    if (a.initialDisplay()) a.displayed = true
+  })
 })
 
 
@@ -25,11 +60,11 @@ if (globalState.gameStarted) {
   globalState.gameStopped = true
 }
 
-Object.defineProperty(globalState, 'tabActive', {
-  get() {
-    return !document.hidden
-  }
-})
+// Object.defineProperty(globalState, 'tabActive', {
+//   get() {
+//     return !document.hidden
+//   }
+// })
 
 window.globalState = globalState
 

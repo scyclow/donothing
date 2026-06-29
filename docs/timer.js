@@ -73,7 +73,7 @@ const runTimer = () => {
       globalState.bestNothingTimeStreak = globalState.currentNothingTimeStreak
     }
 
-    tickFns.forEach(fn => fn())
+    tickFns.forEach(fn => fn(globalState.currentNothingTimeStreak, globalState.totalNothingTime))
 
   }, 1000)
 }

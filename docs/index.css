@@ -56,6 +56,10 @@ html {
   scroll-behavior: smooth;
 }
 
+button {
+  padding: 0.25em 0.5em;
+}
+
 button, select, label, input[type="range"], input[type="checkbox"], details {
   cursor: pointer;
 }

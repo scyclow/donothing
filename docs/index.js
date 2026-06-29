@@ -5,20 +5,19 @@ import { globalState } from './state.js'
 import { onTick } from './timer.js'
 
 import './components/misc.js'
+import './components/nothingModule.js'
 import './components/nothingTimer.js'
 import './components/popup.js'
+import './components/achievements.js'
 
 
 
 veilDisplay('veil')
 menuDisplay('menu', 'menuControls', 'menuStats')
 
-$.id('main').innerHTML = '<nothing-timer></nothing-timer>'
 
 
-$.id('main').append($.fromHTML(`
-<div style="width: 200px; height: 400px"></div>
-  `))
+
 
 
 /* TODO
@@ -61,9 +60,15 @@ $.id('main').append($.fromHTML(`
 */
 
 
+
 function mountMoneyPopup() {
+  const width = 200
+  const height = 200
+  const x = Math.floor(Math.random() * (window.innerWidth - width))
+  const y = Math.floor(Math.random() * (window.innerHeight - height))
+
   const moneyPopup = $.fromHTML(`
-    <nothing-popup id="moneyPopup" x="15px" y="10px" width="200px" height="200px">
+    <nothing-popup id="moneyPopup" x="${x}px" y="${y}px" width="${width}px" height="${height}px">
       <span style="font-size: 30px; cursor: pointer; font-family: var(--font2); font-weight: bold">CLICK <nothing-blink duration="750"><span style="text-decoration: underline">HERE</span></nothing-blink> TO START MAKING $ <em>NOW</em></span>
     </nothing-popup>
   `)
