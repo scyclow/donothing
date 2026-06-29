@@ -48,7 +48,7 @@ createComponent(
 
     </style>
 
-    <nothing-module title="Achievements">
+    <nothing-module legend="Achievements">
       <div id="achievements"></div>
     </nothing-module>
   `,

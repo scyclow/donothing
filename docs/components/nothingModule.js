@@ -30,7 +30,7 @@ createComponent(
         position: absolute;
       }
 
-      #title {
+      #legend {
         background: var(--bg-color);
         padding: 0 0.25em;
       }
@@ -39,13 +39,13 @@ createComponent(
 
     <section id="nothingModule">
       <div class="titleContainer">
-        <h4 id="title"></h4>
+        <h4 id="legend"></h4>
       </div>
       <slot></slot>
     </section>
   `,
   {},
   ctx => {
-    ctx.$('#title').innerHTML = ctx.getAttribute('title')
+    ctx.$('#legend').innerHTML = ctx.getAttribute('legend')
   },
 )

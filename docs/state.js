@@ -60,12 +60,6 @@ if (globalState.gameStarted) {
   globalState.gameStopped = true
 }
 
-// Object.defineProperty(globalState, 'tabActive', {
-//   get() {
-//     return !document.hidden
-//   }
-// })
-
 window.globalState = globalState
 
 export function startGame() {
@@ -78,6 +72,9 @@ export function startGame() {
 
 export function continueGame() {
   globalState.gameStopped = false
+  setInterval(() => {
+    globalState.totalSeconds += 1
+  }, 1000)
 }
 
 
