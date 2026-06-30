@@ -1,6 +1,6 @@
 import { $ } from '../$.js'
 import { globalState } from '../state.js'
-import {createComponent} from '../../$.js'
+import {createComponent} from '../$.js'
 import {onTick, onClear} from '../timer.js'
 
 
