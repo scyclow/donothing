@@ -7,13 +7,13 @@ createComponent(
   'nothing-module',
   `
     <style>
+      :host { display: block; }
       * {
         padding: 0;
         margin: 0;
       }
 
       #nothingModule {
-        margin-top: 0.5em;
         padding: 0.5em;
         padding-top: 1em;
         border: 1px solid var(--border-color);
@@ -22,6 +22,15 @@ createComponent(
         min-width: 220px;
         max-width: 288px;
         min-height: 145px;
+
+        display: flex;
+        flex-direction: column;
+      }
+
+      #content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
 
       .titleContainer {
@@ -41,7 +50,9 @@ createComponent(
       <div class="titleContainer">
         <h4 id="legend"></h4>
       </div>
-      <slot></slot>
+      <div id="content">
+        <slot></slot>
+      </div>
     </section>
   `,
   {},
