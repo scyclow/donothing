@@ -1,5 +1,5 @@
-import {SoundSrc} from '../audio.js'
-import {globalState} from '../state.js'
+import {SoundSrc} from './audio.js'
+import {globalState} from './state.js'
 
 
 const tickFns = []
