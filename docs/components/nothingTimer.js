@@ -1,4 +1,4 @@
-import {$, createComponent} from '../../$.js'
+import {$, createComponent} from '../$.js'
 import {globalState,} from '../state.js'
 import {onPause, onResume, onClear, onTick} from '../timer.js'
 import {persist} from '../persist.js'
